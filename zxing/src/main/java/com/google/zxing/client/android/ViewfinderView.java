@@ -16,18 +16,20 @@
 
 package com.google.zxing.client.android;
 
-import com.google.zxing.ResultPoint;
-import com.google.zxing.client.android.camera.CameraManager;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
+
+import com.google.zxing.ResultPoint;
+import com.google.zxing.client.android.camera.CameraManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,14 +47,18 @@ public final class ViewfinderView extends View {
   private static final int CURRENT_POINT_OPACITY = 0xA0;
   private static final int MAX_RESULT_POINTS = 20;
   private static final int POINT_SIZE = 6;
+  private static final int corWidth =50;
+  private static final int corHeight = 10;
 
   private CameraManager cameraManager;
   private final Paint paint;
+  private final Paint cornerPaint;
   private Bitmap resultBitmap;
   private final int maskColor;
   private final int resultColor;
   private final int laserColor;
   private final int resultPointColor;
+  private final int cornerColor;
   private int scannerAlpha;
   private List<ResultPoint> possibleResultPoints;
   private List<ResultPoint> lastPossibleResultPoints;
@@ -63,11 +69,15 @@ public final class ViewfinderView extends View {
 
     // Initialize these once for performance rather than calling them every time in onDraw().
     paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    cornerPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    cornerPaint.setStyle(Paint.Style.FILL_AND_STROKE);
     Resources resources = getResources();
     maskColor = resources.getColor(R.color.viewfinder_mask);
     resultColor = resources.getColor(R.color.result_view);
     laserColor = resources.getColor(R.color.viewfinder_laser);
     resultPointColor = resources.getColor(R.color.possible_result_points);
+    cornerColor = resources.getColor(R.color.viewfinder_corner);
+    cornerPaint.setColor(cornerColor);
     scannerAlpha = 0;
     possibleResultPoints = new ArrayList<>(5);
     lastPossibleResultPoints = null;
@@ -92,11 +102,57 @@ public final class ViewfinderView extends View {
     int height = canvas.getHeight();
 
     // Draw the exterior (i.e. outside the framing rect) darkened
+    Log.i("wujie", frame.left +"-"+ frame.top + "-" + frame.bottom + "-" + frame.right);
+    Log.i("wujie", "width:"+width + "  height:"+ height);
     paint.setColor(resultBitmap != null ? resultColor : maskColor);
+
     canvas.drawRect(0, 0, width, frame.top, paint);
     canvas.drawRect(0, frame.top, frame.left, frame.bottom + 1, paint);
     canvas.drawRect(frame.right + 1, frame.top, width, frame.bottom + 1, paint);
     canvas.drawRect(0, frame.bottom + 1, width, height, paint);
+    Path leftPath = new Path();
+    leftPath.moveTo(frame.left, frame.top);
+    leftPath.lineTo(frame.left+corWidth, frame.top);
+    leftPath.lineTo(frame.left+corWidth, frame.top+ corHeight);
+    leftPath.lineTo(frame.left+corHeight, frame.top+corHeight);
+    leftPath.lineTo(frame.left+corHeight, frame.top+corWidth);
+    leftPath.lineTo(frame.left, frame.top+corWidth);
+    leftPath.lineTo(frame.left, frame.top);
+
+    Path topPath = new Path();
+    topPath.moveTo(frame.right, frame.top);
+    topPath.lineTo(frame.right, frame.top+corWidth);
+    topPath.lineTo(frame.right - corHeight, frame.top+corWidth);
+    topPath.lineTo(frame.right-corHeight, frame.top+corHeight);
+    topPath.lineTo(frame.right - corWidth , frame.top+corHeight);
+    topPath.lineTo(frame.right -corWidth, frame.top);
+    topPath.lineTo(frame.right, frame.top);
+
+    Path botPath = new Path();
+    botPath.moveTo(frame.left, frame.bottom);
+    botPath.lineTo(frame.left, frame.bottom - corWidth);
+    botPath.lineTo(frame.left + corHeight, frame.bottom - corWidth);
+    botPath.lineTo(frame.left + corHeight, frame.bottom - corHeight);
+    botPath.lineTo(frame.left + corWidth, frame.bottom - corHeight);
+    botPath.lineTo(frame.left + corWidth, frame.bottom);
+    botPath.lineTo(frame.left, frame.bottom);
+
+    Path rigPath = new Path();
+    rigPath.moveTo(frame.right, frame.bottom);
+    rigPath.lineTo(frame.right - corWidth, frame.bottom);
+    rigPath.lineTo(frame.right -corWidth, frame.bottom - corHeight);
+    rigPath.lineTo(frame.right -corHeight, frame.bottom -corHeight);
+    rigPath.lineTo(frame.right-corHeight, frame.bottom -corWidth);
+    rigPath.lineTo(frame.right, frame.bottom -corWidth);
+    rigPath.lineTo(frame.right, frame.bottom);
+
+
+    canvas.drawPath(leftPath,cornerPaint);
+    canvas.drawPath(topPath,cornerPaint);
+    canvas.drawPath(botPath,cornerPaint);
+    canvas.drawPath(rigPath,cornerPaint);
+
+
 
     if (resultBitmap != null) {
       // Draw the opaque result bitmap over the scanning rectangle
