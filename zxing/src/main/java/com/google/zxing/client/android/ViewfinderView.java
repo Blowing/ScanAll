@@ -20,6 +20,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
@@ -63,6 +64,8 @@ public final class ViewfinderView extends View {
   private List<ResultPoint> possibleResultPoints;
   private List<ResultPoint> lastPossibleResultPoints;
 
+
+
   // This constructor is used when the class is built from an XML resource.
   public ViewfinderView(Context context, AttributeSet attrs) {
     super(context, attrs);
@@ -81,6 +84,7 @@ public final class ViewfinderView extends View {
     scannerAlpha = 0;
     possibleResultPoints = new ArrayList<>(5);
     lastPossibleResultPoints = null;
+    scanLightBp = BitmapFactory.decodeResource(getResources(), R.drawable.scanline);
   }
 
   public void setCameraManager(CameraManager cameraManager) {
@@ -165,8 +169,12 @@ public final class ViewfinderView extends View {
       paint.setAlpha(SCANNER_ALPHA[scannerAlpha]);
       scannerAlpha = (scannerAlpha + 1) % SCANNER_ALPHA.length;
       int middle = frame.height() / 2 + frame.top;
-      canvas.drawRect(frame.left + 2, middle - 1, frame.right - 1, middle + 2, paint);
-      
+//      canvas.drawRect(frame.left + 2, middle - 1, frame.right - 1, middle + 2, paint);
+      drawScanLight(canvas,frame);
+
+
+
+
       float scaleX = frame.width() / (float) previewFrame.width();
       float scaleY = frame.height() / (float) previewFrame.height();
 
@@ -219,6 +227,25 @@ public final class ViewfinderView extends View {
       resultBitmap.recycle();
     }
     invalidate();
+  }
+
+  private int scanLineTop = 0;
+  private int SCAN_VELOCITY = 10;
+  private Bitmap scanLightBp;
+
+  private void drawScanLight(Canvas canvas, Rect frame) {
+    if (scanLineTop == 0) {
+      scanLineTop = frame.top;
+    }
+
+    if (scanLineTop >= frame.bottom -20) {
+      scanLineTop = frame.top;
+    } else {
+      scanLineTop += SCAN_VELOCITY;
+    }
+
+    Rect scanRect = new Rect(frame.left, scanLineTop, frame.right, scanLineTop+ 20);
+    canvas.drawBitmap(scanLightBp, null, scanRect, paint);
   }
 
   /**
