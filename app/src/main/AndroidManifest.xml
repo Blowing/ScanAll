@@ -26,6 +26,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".barcode.ScanActivity"></activity>
+        <activity android:name=".barcode.ScanActivity" />
+        <activity android:name=".result.ShowResutlActivity"></activity>
     </application>
 </manifest>

@@ -27,4 +27,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="没事扫一扫"/>
+
+    <Button
+        android:id="@+id/btn_scan_show"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="爬虫显示"/>
 </LinearLayout>
