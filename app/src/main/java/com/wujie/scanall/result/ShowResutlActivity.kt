@@ -118,6 +118,7 @@ class ShowResutlActivity : AppCompatActivity() {
             p2 = toHex(localMac.doFinal(paramString2.toByteArray()))
             p1 = p2
             p2 = p2.toUpperCase()
+            //ssss
             return p2
         } catch (e: Exception) {
             e.printStackTrace()
