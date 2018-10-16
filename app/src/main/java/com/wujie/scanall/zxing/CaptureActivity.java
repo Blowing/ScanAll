@@ -141,7 +141,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     beepManager = new BeepManager(this);
     ambientLightManager = new AmbientLightManager(this);
 
-    PreferenceManager.setDefaultValues(this, com.google.zxing.client.android.R.xml.preferences, false);
+    PreferenceManager.setDefaultValues(this, com.google.zxing.R.xml.preferences, false);
   }
 
   @Override
@@ -355,7 +355,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     MenuInflater menuInflater = getMenuInflater();
-    menuInflater.inflate(com.google.zxing.client.android.R.menu.capture, menu);
+    menuInflater.inflate(com.google.zxing.R.menu.capture, menu);
     return super.onCreateOptionsMenu(menu);
   }
 
@@ -364,19 +364,19 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     Intent intent = new Intent(Intent.ACTION_VIEW);
     intent.addFlags(Intents.FLAG_NEW_DOC);
     int i = item.getItemId();
-    if (i == com.google.zxing.client.android.R.id.menu_share) {
+    if (i == com.google.zxing.R.id.menu_share) {
       intent.setClassName(this, ShareActivity.class.getName());
       startActivity(intent);
 
-    } else if (i == com.google.zxing.client.android.R.id.menu_history) {
+    } else if (i == com.google.zxing.R.id.menu_history) {
       intent.setClassName(this, HistoryActivity.class.getName());
       startActivityForResult(intent, HISTORY_REQUEST_CODE);
 
-    } else if (i == com.google.zxing.client.android.R.id.menu_settings) {
+    } else if (i == com.google.zxing.R.id.menu_settings) {
       intent.setClassName(this, PreferencesActivity.class.getName());
       startActivity(intent);
 
-    } else if (i == com.google.zxing.client.android.R.id.menu_help) {
+    } else if (i == com.google.zxing.R.id.menu_help) {
       intent.setClassName(this, HelpActivity.class.getName());
       startActivity(intent);
 
@@ -406,7 +406,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         savedResultToShow = result;
       }
       if (savedResultToShow != null) {
-        Message message = Message.obtain(handler, com.google.zxing.client.android.R.id.decode_succeeded, savedResultToShow);
+        Message message = Message.obtain(handler, com.google.zxing.R.id.decode_succeeded, savedResultToShow);
         handler.sendMessage(message);
       }
       savedResultToShow = null;
@@ -470,7 +470,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         if (fromLiveScan && prefs.getBoolean(PreferencesActivity.KEY_BULK_MODE, false)) {
           Toast.makeText(getApplicationContext(),
-                         getResources().getString(com.google.zxing.client.android.R.string.msg_bulk_mode_scanned) + " (" + rawResult.getText() + ')',
+                         getResources().getString(com.google.zxing.R.string.msg_bulk_mode_scanned) + " (" + rawResult.getText() + ')',
                          Toast.LENGTH_SHORT).show();
           maybeSetClipboard(resultHandler);
           // Wait a moment or else it will scan the same barcode continuously about 3 times
@@ -494,7 +494,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     if (points != null && points.length > 0) {
       Canvas canvas = new Canvas(barcode);
       Paint paint = new Paint();
-      paint.setColor(getResources().getColor(com.google.zxing.client.android.R.color.result_points));
+      paint.setColor(getResources().getColor(com.google.zxing.R.color.result_points));
       if (points.length == 2) {
         paint.setStrokeWidth(4.0f);
         drawLine(canvas, paint, points[0], points[1], scaleFactor);
@@ -544,7 +544,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     ImageView barcodeImageView = (ImageView) findViewById(R.id.barcode_image_view);
     if (barcode == null) {
       barcodeImageView.setImageBitmap(BitmapFactory.decodeResource(getResources(),
-          com.google.zxing.client.android.R.drawable.launcher_icon));
+          com.google.zxing.R.drawable.launcher_icon));
     } else {
       barcodeImageView.setImageBitmap(barcode);
     }
@@ -674,7 +674,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
             }
           }
         }
-        sendReplyMessage(com.google.zxing.client.android.R.id.return_scan_result, intent, resultDurationMS);
+        sendReplyMessage(com.google.zxing.R.id.return_scan_result, intent, resultDurationMS);
         break;
 
       case PRODUCT_SEARCH_LINK:
@@ -683,14 +683,14 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         int end = sourceUrl.lastIndexOf("/scan");
         String productReplyURL = sourceUrl.substring(0, end) + "?q=" +
             resultHandler.getDisplayContents() + "&source=zxing";
-        sendReplyMessage(com.google.zxing.client.android.R.id.launch_product_query, productReplyURL, resultDurationMS);
+        sendReplyMessage(com.google.zxing.R.id.launch_product_query, productReplyURL, resultDurationMS);
         break;
 
       case ZXING_LINK:
         if (scanFromWebPageManager != null && scanFromWebPageManager.isScanFromWebPage()) {
           String linkReplyURL = scanFromWebPageManager.buildReplyURL(rawResult, resultHandler);
           scanFromWebPageManager = null;
-          sendReplyMessage(com.google.zxing.client.android.R.id.launch_product_query, linkReplyURL, resultDurationMS);
+          sendReplyMessage(com.google.zxing.R.id.launch_product_query, linkReplyURL, resultDurationMS);
         }
         break;
     }
@@ -741,23 +741,23 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 
   private void displayFrameworkBugMessageAndExit() {
     AlertDialog.Builder builder = new AlertDialog.Builder(this);
-    builder.setTitle(getString(com.google.zxing.client.android.R.string.app_name));
-    builder.setMessage(getString(com.google.zxing.client.android.R.string.msg_camera_framework_bug));
-    builder.setPositiveButton(com.google.zxing.client.android.R.string.button_ok, new FinishListener(this));
+    builder.setTitle(getString(com.google.zxing.R.string.app_name));
+    builder.setMessage(getString(com.google.zxing.R.string.msg_camera_framework_bug));
+    builder.setPositiveButton(com.google.zxing.R.string.button_ok, new FinishListener(this));
     builder.setOnCancelListener(new FinishListener(this));
     builder.show();
   }
 
   public void restartPreviewAfterDelay(long delayMS) {
     if (handler != null) {
-      handler.sendEmptyMessageDelayed(com.google.zxing.client.android.R.id.restart_preview, delayMS);
+      handler.sendEmptyMessageDelayed(com.google.zxing.R.id.restart_preview, delayMS);
     }
     resetStatusView();
   }
 
   private void resetStatusView() {
     resultView.setVisibility(View.GONE);
-    statusView.setText(com.google.zxing.client.android.R.string.msg_default_status);
+    statusView.setText(com.google.zxing.R.string.msg_default_status);
     statusView.setVisibility(View.VISIBLE);
     viewfinderView.setVisibility(View.VISIBLE);
     lastResult = null;

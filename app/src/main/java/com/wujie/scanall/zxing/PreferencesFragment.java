@@ -44,7 +44,7 @@ public final class PreferencesFragment
   @Override
   public void onCreate(Bundle icicle) {
     super.onCreate(icicle);
-    addPreferencesFromResource(com.google.zxing.client.android.R.xml.preferences);
+    addPreferencesFromResource(com.google.zxing.R.xml.preferences);
 
     PreferenceScreen preferences = getPreferenceScreen();
     preferences.getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
@@ -94,8 +94,8 @@ public final class PreferencesFragment
       if (!isValid(newValue)) {
         AlertDialog.Builder builder =
             new AlertDialog.Builder(PreferencesFragment.this.getActivity());
-        builder.setTitle(com.google.zxing.client.android.R.string.msg_error);
-        builder.setMessage(com.google.zxing.client.android.R.string.msg_invalid_value);
+        builder.setTitle(com.google.zxing.R.string.msg_error);
+        builder.setMessage(com.google.zxing.R.string.msg_invalid_value);
         builder.setCancelable(true);
         builder.show();
         return false;

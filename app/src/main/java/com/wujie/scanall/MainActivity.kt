@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
-import com.wujie.scanall.barcode.ScanActivity
 import com.wujie.scanall.base.BaseActivity
 import com.wujie.scanall.result.ShowResutlActivity
 import com.wujie.scanall.zxing.CaptureActivity
@@ -30,7 +29,8 @@ class MainActivity : BaseActivity(), View.OnClickListener {
                 startActivity(Intent(this, CaptureActivity::class.java))
             }
             R.id.btn_scan_all -> {
-                startActivity(Intent(this, ScanActivity::class.java))
+//                startActivity(Intent(this, com.google.zxing
+//                        .CaptureActivity::class.java))
             }
             R.id.btn_scan_show -> {
                 startActivity(Intent(this, ShowResutlActivity::class.java))

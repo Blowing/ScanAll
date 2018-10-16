@@ -53,10 +53,10 @@ final class DecodeHandler extends Handler {
     if (message == null || !running) {
       return;
     }
-    if (message.what == com.google.zxing.client.android.R.id.decode) {
+    if (message.what == com.google.zxing.R.id.decode) {
       decode((byte[]) message.obj, message.arg1, message.arg2);
 
-    } else if (message.what == com.google.zxing.client.android.R.id.quit) {
+    } else if (message.what == com.google.zxing.R.id.quit) {
       running = false;
       Looper.myLooper().quit();
 
@@ -80,6 +80,7 @@ final class DecodeHandler extends Handler {
       try {
         rawResult = multiFormatReader.decodeWithState(bitmap);
       } catch (ReaderException re) {
+        re.printStackTrace();
         // continue
       } finally {
         multiFormatReader.reset();
@@ -92,7 +93,7 @@ final class DecodeHandler extends Handler {
       long end = System.currentTimeMillis();
       Log.d(TAG, "Found barcode in " + (end - start) + " ms");
       if (handler != null) {
-        Message message = Message.obtain(handler, com.google.zxing.client.android.R.id.decode_succeeded, rawResult);
+        Message message = Message.obtain(handler, com.google.zxing.R.id.decode_succeeded, rawResult);
         Bundle bundle = new Bundle();
         bundleThumbnail(source, bundle);
         message.setData(bundle);
@@ -100,7 +101,7 @@ final class DecodeHandler extends Handler {
       }
     } else {
       if (handler != null) {
-        Message message = Message.obtain(handler, com.google.zxing.client.android.R.id.decode_failed);
+        Message message = Message.obtain(handler, com.google.zxing.R.id.decode_failed);
         message.sendToTarget();
       }
     }

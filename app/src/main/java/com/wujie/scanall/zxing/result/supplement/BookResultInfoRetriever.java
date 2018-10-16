@@ -19,7 +19,7 @@ package com.wujie.scanall.zxing.result.supplement;
 import android.content.Context;
 import android.widget.TextView;
 
-import com.google.zxing.client.android.R;
+import com.google.zxing.R;
 import com.wujie.scanall.zxing.HttpHelper;
 import com.wujie.scanall.zxing.LocaleManager;
 import com.wujie.scanall.zxing.history.HistoryManager;

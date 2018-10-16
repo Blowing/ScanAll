@@ -78,10 +78,10 @@ public final class CaptureActivityHandler extends Handler {
   @Override
   public void handleMessage(Message message) {
     Log.i("wuwu", "message"+ message.what);
-    if (message.what == com.google.zxing.client.android.R.id.restart_preview) {
+    if (message.what == com.google.zxing.R.id.restart_preview) {
       restartPreviewAndDecode();
 
-    } else if (message.what == com.google.zxing.client.android.R.id.decode_succeeded) {
+    } else if (message.what == com.google.zxing.R.id.decode_succeeded) {
       state = State.SUCCESS;
       Bundle bundle = message.getData();
       Bitmap barcode = null;
@@ -98,16 +98,16 @@ public final class CaptureActivityHandler extends Handler {
       }
       activity.handleDecode((Result) message.obj, barcode, scaleFactor);
 
-    } else if (message.what == com.google.zxing.client.android.R.id.decode_failed) {// We're decoding as fast as possible, so
+    } else if (message.what == com.google.zxing.R.id.decode_failed) {// We're decoding as fast as possible, so
       // when one decode fails, start another.
       state = State.PREVIEW;
-      cameraManager.requestPreviewFrame(decodeThread.getHandler(), com.google.zxing.client.android.R.id.decode);
+      cameraManager.requestPreviewFrame(decodeThread.getHandler(), com.google.zxing.R.id.decode);
 
-    } else if (message.what == com.google.zxing.client.android.R.id.return_scan_result) {
+    } else if (message.what == com.google.zxing.R.id.return_scan_result) {
       activity.setResult(Activity.RESULT_OK, (Intent) message.obj);
       activity.finish();
 
-    } else if (message.what == com.google.zxing.client.android.R.id.launch_product_query) {
+    } else if (message.what == com.google.zxing.R.id.launch_product_query) {
       String url = (String) message.obj;
 
       Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -147,7 +147,7 @@ public final class CaptureActivityHandler extends Handler {
   public void quitSynchronously() {
     state = State.DONE;
     cameraManager.stopPreview();
-    Message quit = Message.obtain(decodeThread.getHandler(), com.google.zxing.client.android.R.id.quit);
+    Message quit = Message.obtain(decodeThread.getHandler(), com.google.zxing.R.id.quit);
     quit.sendToTarget();
     try {
       // Wait at most half a second; should be enough time, and onPause() will timeout quickly
@@ -157,14 +157,14 @@ public final class CaptureActivityHandler extends Handler {
     }
 
     // Be absolutely sure we don't send any queued up messages
-    removeMessages(com.google.zxing.client.android.R.id.decode_succeeded);
-    removeMessages(com.google.zxing.client.android.R.id.decode_failed);
+    removeMessages(com.google.zxing.R.id.decode_succeeded);
+    removeMessages(com.google.zxing.R.id.decode_failed);
   }
 
   private void restartPreviewAndDecode() {
     if (state == State.SUCCESS) {
       state = State.PREVIEW;
-      cameraManager.requestPreviewFrame(decodeThread.getHandler(), com.google.zxing.client.android.R.id.decode);
+      cameraManager.requestPreviewFrame(decodeThread.getHandler(), com.google.zxing.R.id.decode);
       activity.drawViewfinder();
     }
   }

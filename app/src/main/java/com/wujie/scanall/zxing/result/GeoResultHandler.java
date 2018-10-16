@@ -18,7 +18,7 @@ package com.wujie.scanall.zxing.result;
 
 import android.app.Activity;
 
-import com.google.zxing.client.android.R;
+import com.google.zxing.R;
 import com.google.zxing.client.result.GeoParsedResult;
 import com.google.zxing.client.result.ParsedResult;
 

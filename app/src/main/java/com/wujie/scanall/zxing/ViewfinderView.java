@@ -75,16 +75,16 @@ public final class ViewfinderView extends View {
     cornerPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     cornerPaint.setStyle(Paint.Style.FILL_AND_STROKE);
     Resources resources = getResources();
-    maskColor = resources.getColor(com.google.zxing.client.android.R.color.viewfinder_mask);
-    resultColor = resources.getColor(com.google.zxing.client.android.R.color.result_view);
-    laserColor = resources.getColor(com.google.zxing.client.android.R.color.viewfinder_laser);
-    resultPointColor = resources.getColor(com.google.zxing.client.android.R.color.possible_result_points);
-    cornerColor = resources.getColor(com.google.zxing.client.android.R.color.viewfinder_corner);
+    maskColor = resources.getColor(com.google.zxing.R.color.viewfinder_mask);
+    resultColor = resources.getColor(com.google.zxing.R.color.result_view);
+    laserColor = resources.getColor(com.google.zxing.R.color.viewfinder_laser);
+    resultPointColor = resources.getColor(com.google.zxing.R.color.possible_result_points);
+    cornerColor = resources.getColor(com.google.zxing.R.color.viewfinder_corner);
     cornerPaint.setColor(cornerColor);
     scannerAlpha = 0;
     possibleResultPoints = new ArrayList<>(5);
     lastPossibleResultPoints = null;
-    scanLightBp = BitmapFactory.decodeResource(getResources(), com.google.zxing.client.android.R.drawable.scanline);
+    scanLightBp = BitmapFactory.decodeResource(getResources(), com.google.zxing.R.drawable.scanline);
   }
 
   public void setCameraManager(CameraManager cameraManager) {
