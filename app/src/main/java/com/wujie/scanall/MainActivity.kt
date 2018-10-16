@@ -26,7 +26,8 @@ class MainActivity : BaseActivity(), View.OnClickListener {
 
         when (v?.id) {
             R.id.btn_scan -> {
-                startActivity(Intent(this, CaptureActivity::class.java))
+                startActivityForResult(Intent(this, CaptureActivity::class.java), 1000)
+//                startActivity(Intent(this, CaptureActivity::class.java))
             }
             R.id.btn_scan_all -> {
 //                startActivity(Intent(this, com.google.zxing
@@ -35,6 +36,14 @@ class MainActivity : BaseActivity(), View.OnClickListener {
             R.id.btn_scan_show -> {
                 startActivity(Intent(this, ShowResutlActivity::class.java))
             }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == 1000) {
+            val intent =  Intent(this, ShowResutlActivity::class.java)
+            intent.putExtra("code", data?.getStringExtra("result"))
+            startActivity(intent)
         }
     }
 }
