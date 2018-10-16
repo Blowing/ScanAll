@@ -4,11 +4,12 @@ import android.os.Bundle
 import android.util.Log
 import android.view.SurfaceHolder
 import android.view.SurfaceView
-import com.google.zxing.client.android.CaptureActivityHandler
-import com.google.zxing.client.android.ViewfinderView
-import com.google.zxing.client.android.camera.CameraManager
+
 import com.wujie.scanall.R
 import com.wujie.scanall.base.BaseActivity
+import com.wujie.scanall.zxing.CaptureActivityHandler
+import com.wujie.scanall.zxing.ViewfinderView
+import com.wujie.scanall.zxing.camera.CameraManager
 import java.io.IOException
 
 class ScanActivity : BaseActivity(), SurfaceHolder.Callback{

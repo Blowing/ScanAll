@@ -1,1 +1,1 @@
-include ':app', ':zxing'
+include ':app', ':zxing', ':lib_http'
