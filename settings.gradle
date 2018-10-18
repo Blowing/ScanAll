@@ -1,1 +1,2 @@
-include ':app', ':zxing', ':lib_http', ':lib_baidu'
+include ':app', ':zxing', ':lib_http'
+//, ':lib_baidu'

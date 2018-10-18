@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import com.wujie.scanall.base.BaseActivity
+import com.wujie.scanall.picture.PictureScanActivity
 import com.wujie.scanall.result.ShowResutlActivity
 import com.wujie.scanall.zxing.CaptureActivity
 
@@ -17,7 +18,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         findViewById<Button>(R.id.btn_scan).setOnClickListener(this)
         findViewById<Button>(R.id.btn_scan_all).setOnClickListener(this)
         findViewById<Button>(R.id.btn_scan_show).setOnClickListener(this)
-
+        findViewById<Button>(R.id.btn_image_classify).setOnClickListener(this)
 
     }
 
@@ -35,6 +36,9 @@ class MainActivity : BaseActivity(), View.OnClickListener {
             }
             R.id.btn_scan_show -> {
                 startActivity(Intent(this, ShowResutlActivity::class.java))
+            }
+            R.id.btn_image_classify -> {
+                startActivity(Intent(this, PictureScanActivity::class.java))
             }
         }
     }

@@ -33,4 +33,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="爬虫显示"/>
+
+    <Button
+        android:id="@+id/btn_image_classify"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="图片扫描"/>
 </LinearLayout>
