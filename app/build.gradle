@@ -37,5 +37,6 @@ dependencies {
 //    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation project(':zxing')
     implementation project(':lib_http')
+    implementation project(':lib_carmer')
 //    implementation project(':lib_baidu')
 }
