@@ -1,8 +1,7 @@
 package com.wujie.scanall.util
 
-import android.util.Log
 import com.baidu.aip.imageclassify.AipImageClassify
-import com.wujie.scanall.base.MyApplication
+import org.json.JSONObject
 
 /**
  * Created by wujie
@@ -25,15 +24,9 @@ class ImageClassifyUtil private constructor(){
         client.setSocketTimeoutInMillis(60000)
     }
 
-    fun ImageClassify() {
+    fun ImageClassify(filePath: String): JSONObject {
         val options =  HashMap<String, String>()
         options["baike_num"] = "5"
-        val input = MyApplication.instance.assets.open("dog.jpg")
-        val length = input.available()
-        val buffers = ByteArray(length)
-        input.read(buffers)
-        input.close()
-        val res = client.advancedGeneral(buffers,options)
-        Log.i("wuwu", res.toString())
+        return client.advancedGeneral(filePath,options)
     }
 }
