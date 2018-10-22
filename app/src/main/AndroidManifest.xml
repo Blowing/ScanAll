@@ -26,10 +26,10 @@
         android:required="false" />
 
     <application
+        android:name=".base.MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:name=".base.MyApplication"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
@@ -165,6 +165,7 @@
             android:label="@string/menu_help"
             android:screenOrientation="user"
             android:stateNotNeeded="true" />
-        <activity android:name=".picture.PictureScanActivity"></activity>
+        <activity android:name=".picture.PictureScanActivity" />
+        <activity android:name=".TestActivity"></activity>
     </application>
 </manifest>

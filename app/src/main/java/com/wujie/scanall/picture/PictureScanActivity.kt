@@ -1,17 +1,17 @@
 package com.wujie.scanall.picture
 
+import android.animation.Animator
+import android.animation.ObjectAnimator
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
 import android.os.Message
-import android.support.design.widget.FloatingActionButton
-import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.RelativeLayout
 import com.google.android.cameraview.CameraView
 import com.wujie.scanall.R
 import com.wujie.scanall.base.BaseActivity
@@ -25,15 +25,19 @@ import java.lang.ref.WeakReference
 class PictureScanActivity : BaseActivity(), View.OnClickListener {
 
     private val TAG = "PictureScanActivity"
+    //拍照的view
+    private lateinit var mCameraView: CameraView
+    private lateinit var mTakePicBtn: ImageView
+    private lateinit var mTakePicLayout: RelativeLayout
+    private lateinit var mPictureLayout: RelativeLayout
 
-    private lateinit var pictureLayout: LinearLayout
-    private lateinit var pictureIv: ImageView
-    private lateinit var nameTv: TextView
-    private lateinit var descriTv: TextView
+    //显示识别结果的view
+    private lateinit var mAfterTakePicLayout: LinearLayout
+    private lateinit var mPictureIv: ImageView
+    private lateinit var mResultLayout: RelativeLayout
 
-    private lateinit var mCameraView : CameraView
 
-    private val mCallback = object : CameraView.Callback(){
+    private val mCallback = object : CameraView.Callback() {
         override fun onCameraOpened(cameraView: CameraView?) {
             Log.i(TAG, "onCameraOpened")
         }
@@ -52,6 +56,7 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
                 val res = ImageClassifyUtil.instance.ImageClassify(file.path)
                 val pictureResult = GsonUtil.fromJson(res, PictureResult::class.java)
                 val message = showHandler.obtainMessage()
+                message.what = 0x11
                 message.obj = pictureResult
                 showHandler.sendMessage(message)
             }.start()
@@ -85,52 +90,74 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
         mCameraView = findViewById(R.id.camera)
         mCameraView.addCallback(mCallback)
 
-        val fab = findViewById<FloatingActionButton>(R.id.take_picture)
-        fab.setOnClickListener(this)
+        mTakePicBtn = findViewById(R.id.take_picture_iv)
+        mTakePicBtn.setOnClickListener(this)
+        mTakePicLayout = findViewById(R.id.take_picture_layout)
+        mPictureLayout = findViewById(R.id.picture_layout)
 
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
-        val actionBar = supportActionBar
-        actionBar?.setDisplayShowTitleEnabled(false)
+        mAfterTakePicLayout = findViewById(R.id.take_picture_after_layout)
+        mPictureIv = findViewById(R.id.picture_iv)
+        mResultLayout = findViewById(R.id.result_layout)
+        showHandler = ShowHandler(this)
 
-        pictureLayout = findViewById(R.id.picture_layout)
-        pictureIv = findViewById(R.id.picture_iv)
-        nameTv = findViewById(R.id.keyword_tv)
-        descriTv = findViewById(R.id.description_tv)
 
     }
 
 
     override fun onClick(v: View?) {
         when (v?.id) {
-            R.id.take_picture -> {
+            R.id.take_picture_iv -> {
                 mCameraView.takePicture()
+                mAfterTakePicLayout.visibility = View.VISIBLE
+                mTakePicLayout.visibility = View.GONE
+                val height = window.decorView.height - mTakePicLayout.height * 3
+                val animator = ObjectAnimator.ofFloat(mResultLayout, "translationY", height.toFloat(), 0f)
+                animator.duration = 2000
+                animator.addListener(object : Animator.AnimatorListener {
+                    override fun onAnimationRepeat(animation: Animator?) {
+                    }
+
+                    override fun onAnimationCancel(animation: Animator?) {
+                    }
+
+                    override fun onAnimationStart(animation: Animator?) {
+                    }
+
+                    override fun onAnimationEnd(animation: Animator?) {
+                        val message = showHandler.obtainMessage()
+                        message.what = 0x12
+                        showHandler.sendMessage(message)
+                    }
+
+                })
+                animator.start()
+
             }
+
         }
     }
 
 
-    private inner class ShowHandler(activity: PictureScanActivity): Handler() {
-        private var weakActivity : WeakReference<PictureScanActivity> = WeakReference(activity)
+    private inner class ShowHandler(activity: PictureScanActivity) : Handler() {
+        private var weakActivity: WeakReference<PictureScanActivity> = WeakReference(activity)
 
         override fun handleMessage(msg: Message?) {
             if (weakActivity.get() == null) {
                 return
             }
 
-            val picResult = msg?.obj as PictureResult
             val activity = weakActivity.get()
-            activity?.pictureLayout?.visibility = View.VISIBLE
-            activity?.mCameraView?.visibility = View.GONE
-            activity?.nameTv?.text = picResult.result[0].keyword
-            activity?.descriTv?.text = picResult.result[0].baike_info.description
-            val file = File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "picture.jpg")
-            val bitmap = BitmapFactory.decodeFile(file.path)
-            activity?.pictureIv?.setImageBitmap(bitmap)
+            when (msg?.what) {
+                0x12 -> {
+                    val file = File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "picture.jpg")
+                    val bitmap = BitmapFactory.decodeFile(file.path)
+                    activity?.mPictureIv?.setImageBitmap(bitmap)
+                }
+
+            }
 
         }
 
-
-
-        }
+    }
 }
+
