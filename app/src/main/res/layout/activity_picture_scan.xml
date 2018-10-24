@@ -64,12 +64,26 @@
         android:orientation="vertical"
         android:background="@color/transparent">
 
-        <ImageView
-            android:id="@+id/picture_iv"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:scaleType="fitXY"
-            />
+            android:layout_height="200dp">
+
+            <ImageView
+                android:id="@+id/picture_iv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitXY"
+                />
+            <ProgressBar
+                android:id="@+id/scan_progresBar"
+                style="@android:style/Widget.ProgressBar.Horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:max="100"
+                android:progressDrawable="@drawable/pro_horizontal" />
+
+        </RelativeLayout>
+
 
         <RelativeLayout
             android:id="@+id/result_layout"

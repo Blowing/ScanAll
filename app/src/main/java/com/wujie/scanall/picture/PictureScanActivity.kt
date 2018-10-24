@@ -11,6 +11,7 @@ import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.RelativeLayout
 import com.google.android.cameraview.CameraView
 import com.wujie.scanall.R
@@ -35,8 +36,9 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
     private lateinit var mAfterTakePicLayout: LinearLayout
     private lateinit var mPictureIv: ImageView
     private lateinit var mResultLayout: RelativeLayout
+    private lateinit var mScanProgressBar: ProgressBar
 
-
+    private var count = 60
     private val mCallback = object : CameraView.Callback() {
         override fun onCameraOpened(cameraView: CameraView?) {
             Log.i(TAG, "onCameraOpened")
@@ -98,6 +100,7 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
         mAfterTakePicLayout = findViewById(R.id.take_picture_after_layout)
         mPictureIv = findViewById(R.id.picture_iv)
         mResultLayout = findViewById(R.id.result_layout)
+        mScanProgressBar = findViewById(R.id.scan_progresBar)
         showHandler = ShowHandler(this)
 
 
@@ -132,6 +135,8 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
                 })
                 animator.start()
 
+
+
             }
 
         }
@@ -152,6 +157,17 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
                     val file = File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "picture.jpg")
                     val bitmap = BitmapFactory.decodeFile(file.path)
                     activity?.mPictureIv?.setImageBitmap(bitmap)
+
+                    val handler = Handler()
+                    val runnable = object : Runnable {
+                        override fun run() {
+                            // TODO Auto-generated method stub
+                            //要做的事情
+                            mScanProgressBar.progress = --count
+                            handler.postDelayed(this, 100)
+                        }
+                    }
+                    handler.postDelayed(runnable, 100)
                 }
 
             }
