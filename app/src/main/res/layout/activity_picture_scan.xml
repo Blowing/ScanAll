@@ -89,7 +89,31 @@
             android:id="@+id/result_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:clipChildren="false"
             android:background="@android:color/white">
+
+
+            <TextView
+                android:id="@+id/result_tv_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:singleLine="true"
+                android:textSize="16sp"
+                tools:text="键盘"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="客官不要急\n结果马上到"/>
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/result_viewpager"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:clipChildren="false"
+                android:layout_centerInParent="true"/>
         </RelativeLayout>
 
     </LinearLayout>

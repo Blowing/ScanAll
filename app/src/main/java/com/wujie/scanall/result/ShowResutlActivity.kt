@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.widget.TextView
 import com.wujie.scanall.R
-import com.wujie.scanall.bean.QrMessage
+import com.wujie.scanall.model.bean.QrMessage
 
 import com.wujie.scanall.lib_http.HttpUtil
 import com.wujie.scanall.lib_http.handler.HttpReponseHandler

@@ -1,4 +1,4 @@
-package com.wujie.scanall.bean
+package com.wujie.scanall.model.bean
 
 /**
  * Created by wujie

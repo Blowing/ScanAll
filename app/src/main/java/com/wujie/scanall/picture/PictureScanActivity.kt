@@ -2,23 +2,25 @@ package com.wujie.scanall.picture
 
 import android.animation.Animator
 import android.animation.ObjectAnimator
+import android.content.Context
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
 import android.os.Message
+import android.support.v4.view.ViewPager
 import android.util.Log
 import android.view.View
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.RelativeLayout
+import android.widget.*
 import com.google.android.cameraview.CameraView
 import com.wujie.scanall.R
 import com.wujie.scanall.base.BaseActivity
-import com.wujie.scanall.bean.PictureResult
+import com.wujie.scanall.model.adapter.PicturePageAdapter
+import com.wujie.scanall.model.bean.BaikeResult
+import com.wujie.scanall.model.bean.PictureResult
 import com.wujie.scanall.util.GsonUtil
 import com.wujie.scanall.util.ImageClassifyUtil
+import com.wujie.scanall.view.ZoomPageTransformer
 import okio.Okio
 import java.io.File
 import java.lang.ref.WeakReference
@@ -37,6 +39,9 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
     private lateinit var mPictureIv: ImageView
     private lateinit var mResultLayout: RelativeLayout
     private lateinit var mScanProgressBar: ProgressBar
+    private lateinit var mResultViewPager: ViewPager
+    private lateinit var mResultNameTv: TextView
+    private lateinit var mBaikeResult: ArrayList<BaikeResult>
 
     private var count = 60
     private val mCallback = object : CameraView.Callback() {
@@ -56,6 +61,7 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
             sink.close()
             Thread {
                 val res = ImageClassifyUtil.instance.ImageClassify(file.path)
+                Log.i("wuwu", res.toString())
                 val pictureResult = GsonUtil.fromJson(res, PictureResult::class.java)
                 val message = showHandler.obtainMessage()
                 message.what = 0x11
@@ -71,6 +77,7 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_picture_scan)
         initView()
+        initResultView()
         showHandler = ShowHandler(this)
     }
 
@@ -97,13 +104,42 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
         mTakePicLayout = findViewById(R.id.take_picture_layout)
         mPictureLayout = findViewById(R.id.picture_layout)
 
+
+    }
+
+    private fun initResultView() {
         mAfterTakePicLayout = findViewById(R.id.take_picture_after_layout)
         mPictureIv = findViewById(R.id.picture_iv)
         mResultLayout = findViewById(R.id.result_layout)
         mScanProgressBar = findViewById(R.id.scan_progresBar)
+        mResultNameTv = findViewById(R.id.result_tv_name)
+        mResultViewPager = findViewById(R.id.result_viewpager)
+        mResultViewPager.pageMargin = 20
+        mResultViewPager.offscreenPageLimit = 3
+        mResultViewPager.setPageTransformer(false, ZoomPageTransformer())
+
+
+        mResultLayout.setOnTouchListener { _, event ->
+                mResultViewPager.dispatchTouchEvent(event)
+
+        }
+        mResultViewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener{
+            override fun onPageScrollStateChanged(p0: Int) {
+            }
+
+            override fun onPageScrolled(p0: Int, p1: Float, p2: Int) {
+            }
+
+            override fun onPageSelected(p0: Int) {
+                mBaikeResult?.let {
+                    mResultNameTv.text = it[p0].keyword+"(它的可信度为${it[p0].score})"
+                }
+
+            }
+
+        })
+
         showHandler = ShowHandler(this)
-
-
     }
 
 
@@ -153,6 +189,15 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
 
             val activity = weakActivity.get()
             when (msg?.what) {
+                0x11 -> {
+                    val resutl = msg.obj as PictureResult
+                    mBaikeResult = resutl.result
+                    mBaikeResult.removeAt(0)
+                    activity?.mResultViewPager?.adapter = PicturePageAdapter(activity as Context,
+                            resutl.result)
+                    mResultNameTv.text = mBaikeResult[0].keyword+"(它的可信度为${mBaikeResult[0].score})"
+                }
+
                 0x12 -> {
                     val file = File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "picture.jpg")
                     val bitmap = BitmapFactory.decodeFile(file.path)
