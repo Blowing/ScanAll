@@ -31,6 +31,7 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
     //拍照的view
     private lateinit var mCameraView: CameraView
     private lateinit var mTakePicBtn: ImageView
+    private lateinit var mToggleFaceIv: ImageView
     private lateinit var mTakePicLayout: RelativeLayout
     private lateinit var mPictureLayout: RelativeLayout
 
@@ -42,6 +43,8 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
     private lateinit var mResultViewPager: ViewPager
     private lateinit var mResultNameTv: TextView
     private lateinit var mBaikeResult: ArrayList<BaikeResult>
+
+    private var facing: Int = 0
 
     private var count = 60
     private val mCallback = object : CameraView.Callback() {
@@ -99,8 +102,13 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
         mCameraView = findViewById(R.id.camera)
         mCameraView.addCallback(mCallback)
 
+        facing = mCameraView.facing
         mTakePicBtn = findViewById(R.id.take_picture_iv)
         mTakePicBtn.setOnClickListener(this)
+
+        mToggleFaceIv = findViewById(R.id.picture_toggle_iv)
+        mToggleFaceIv.setOnClickListener(this)
+
         mTakePicLayout = findViewById(R.id.take_picture_layout)
         mPictureLayout = findViewById(R.id.picture_layout)
 
@@ -145,7 +153,7 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
 
     override fun onClick(v: View?) {
         when (v?.id) {
-            R.id.take_picture_iv -> {
+            R.id.take_picture_iv -> { // 拍照
                 mCameraView.takePicture()
                 mAfterTakePicLayout.visibility = View.VISIBLE
                 mTakePicLayout.visibility = View.GONE
@@ -170,8 +178,19 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
 
                 })
                 animator.start()
+            }
 
+            R.id.picture_toggle_iv -> { //切换前后摄像头
 
+                var animator = ObjectAnimator.ofFloat(mToggleFaceIv, "rotationY", 0f, 180f)
+                animator.duration = 500
+                animator.start()
+                facing = if (facing == CameraView.FACING_FRONT) {
+                    CameraView.FACING_BACK
+                } else {
+                    CameraView.FACING_FRONT
+                }
+                mCameraView.facing = facing
 
             }
 
