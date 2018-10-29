@@ -61,6 +61,8 @@ class TextureViewPreview extends PreviewImpl {
             public void onSurfaceTextureUpdated(SurfaceTexture surface) {
             }
         });
+
+
     }
 
     // This method is called only from Camera2.

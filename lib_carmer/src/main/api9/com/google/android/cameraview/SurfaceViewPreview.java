@@ -18,6 +18,7 @@ package com.google.android.cameraview;
 
 import android.content.Context;
 import android.support.v4.view.ViewCompat;
+import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -27,6 +28,7 @@ import android.view.ViewGroup;
 class SurfaceViewPreview extends PreviewImpl {
 
     final SurfaceView mSurfaceView;
+
 
     SurfaceViewPreview(Context context, ViewGroup parent) {
         final View view = View.inflate(context, R.layout.surface_view, parent);
@@ -52,7 +54,20 @@ class SurfaceViewPreview extends PreviewImpl {
                 setSize(0, 0);
             }
         });
+        mSurfaceView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                if (event.getPointerCount() == 2) {
+                    event.getX()
+                }
+
+                return true;
+            }
+        });
+
     }
+
 
     @Override
     Surface getSurface() {
