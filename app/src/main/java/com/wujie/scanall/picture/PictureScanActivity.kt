@@ -10,6 +10,7 @@ import android.os.Handler
 import android.os.Message
 import android.support.v4.view.ViewPager
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
 import android.widget.*
 import com.google.android.cameraview.CameraView
@@ -45,6 +46,9 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
     private lateinit var mBaikeResult: ArrayList<BaikeResult>
 
     private var facing: Int = 0
+
+    private var newDis = 0
+    private var oldDis = 0
 
     private var count = 60
     private val mCallback = object : CameraView.Callback() {
@@ -101,6 +105,40 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
     private fun initView() {
         mCameraView = findViewById(R.id.camera)
         mCameraView.addCallback(mCallback)
+
+        mCameraView.setOnTouchListener(object : View.OnTouchListener{
+            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+
+                if(event?.pointerCount == 2 ) {
+
+                    when (event.action and MotionEvent.ACTION_MASK) {
+
+                        MotionEvent.ACTION_POINTER_DOWN -> {
+                            val x = event?.getX(0) - event?.getX(1)
+                            val y = event.getY(0) - event.getY(1)
+                            oldDis = Math.sqrt((x*x + y*y).toDouble()).toInt()
+                            Log.i("wuwu", "new"+ oldDis + mCameraView.width)
+                        }
+
+                        MotionEvent.ACTION_MOVE -> {
+                            val x = event?.getX(0) - event?.getX(1)
+                            val y = event.getY(0) - event.getY(1)
+                            newDis = Math.sqrt((x*x + y*y).toDouble()).toInt()
+                            val zoom = (newDis - oldDis)
+                            oldDis = newDis
+
+                            mCameraView.setZoom(zoom < 0)
+
+                            Log.i("wuwu", "zoom"+ newDis + mCameraView.width)
+                        }
+                    }
+
+
+                }
+                return true
+            }
+
+        })
 
         facing = mCameraView.facing
         mTakePicBtn = findViewById(R.id.take_picture_iv)

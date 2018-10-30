@@ -71,6 +71,8 @@ class Camera1 extends CameraViewImpl {
 
     private int mDisplayOrientation;
 
+    private int zoom;
+
     Camera1(Callback callback, PreviewImpl preview) {
         super(callback, preview);
         preview.setCallback(new PreviewImpl.Callback() {
@@ -236,6 +238,19 @@ class Camera1 extends CameraViewImpl {
         } else {
             takePictureInternal();
         }
+    }
+
+    @Override
+    void setZoom(boolean isZoom) {
+        if (isZoom) {
+            zoom--;
+        } else {
+            zoom++;
+        }
+        if (0 <= zoom && zoom < 100) {
+            mCameraParameters.setZoom(zoom);
+        }
+        mCamera.setParameters(mCameraParameters);
     }
 
     void takePictureInternal() {
