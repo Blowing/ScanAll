@@ -2,7 +2,9 @@ package com.wujie.scanall.picture
 
 import android.animation.Animator
 import android.animation.ObjectAnimator
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.os.Environment
@@ -145,6 +147,8 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
         mToggleFaceIv = findViewById(R.id.picture_toggle_iv)
         mToggleFaceIv.setOnClickListener(this)
 
+        findViewById<ImageView>(R.id.album_iv).setOnClickListener(this)
+
         mTakePicLayout = findViewById(R.id.take_picture_layout)
         mPictureLayout = findViewById(R.id.picture_layout)
 
@@ -229,6 +233,58 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
                 mCameraView.facing = facing
 
             }
+
+            R.id.album_iv -> {
+
+                val intent = Intent()
+                intent.action = Intent.ACTION_GET_CONTENT
+                intent.type = "image/*"
+                startActivityForResult(intent, 1)
+
+            }
+
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK) {
+            val uri = data?.data
+            //val file = File(URI(uri?.scheme, uri?.host, uri?.path, null))
+            Log.i("wuwu", uri.toString() )
+//            mAfterTakePicLayout.visibility = View.VISIBLE
+//            mTakePicLayout.visibility = View.GONE
+//            val height = window.decorView.height - mTakePicLayout.height * 3
+//            val animator = ObjectAnimator.ofFloat(mResultLayout, "translationY", height.toFloat(), 0f)
+//            animator.duration = 2000
+//            animator.addListener(object : Animator.AnimatorListener {
+//                override fun onAnimationRepeat(animation: Animator?) {
+//                }
+//
+//                override fun onAnimationCancel(animation: Animator?) {
+//                }
+//
+//                override fun onAnimationStart(animation: Animator?) {
+//                }
+//
+//                override fun onAnimationEnd(animation: Animator?) {
+//                    val message = showHandler.obtainMessage()
+//                    message.what = 0x12
+//                    showHandler.sendMessage(message)
+//                }
+//
+//            })
+//            animator.start()
+
+            Thread {
+                val res = ImageClassifyUtil.instance.ImageClassify(uri!!.path)
+                Log.i("wuwu", res.toString())
+                val pictureResult = GsonUtil.fromJson(res, PictureResult::class.java)
+                val message = showHandler.obtainMessage()
+                message.what = 0x11
+                message.obj = pictureResult
+                showHandler.sendMessage(message)
+            }.start()
 
         }
     }
