@@ -71,6 +71,8 @@ class Camera1 extends CameraViewImpl {
 
     private int mDisplayOrientation;
 
+    private int mMaxZoom;
+
     private int zoom;
 
     Camera1(Callback callback, PreviewImpl preview) {
@@ -247,9 +249,13 @@ class Camera1 extends CameraViewImpl {
         } else {
             zoom++;
         }
-        if (0 <= zoom && zoom < 100) {
-            mCameraParameters.setZoom(zoom);
+        if (zoom < 0) {
+            zoom = 0;
+        } else if (zoom > mMaxZoom) {
+            zoom = mMaxZoom;
         }
+
+        mCameraParameters.setZoom(zoom);
         mCamera.setParameters(mCameraParameters);
     }
 
@@ -307,6 +313,7 @@ class Camera1 extends CameraViewImpl {
         }
         mCamera = Camera.open(mCameraId);
         mCameraParameters = mCamera.getParameters();
+        mMaxZoom = mCameraParameters.getMaxZoom();
         // Supported preview sizes
         mPreviewSizes.clear();
         for (Camera.Size size : mCameraParameters.getSupportedPreviewSizes()) {

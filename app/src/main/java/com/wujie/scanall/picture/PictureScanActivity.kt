@@ -128,8 +128,6 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
                             oldDis = newDis
 
                             mCameraView.setZoom(zoom < 0)
-
-                            Log.i("wuwu", "zoom"+ newDis + mCameraView.width)
                         }
                     }
 

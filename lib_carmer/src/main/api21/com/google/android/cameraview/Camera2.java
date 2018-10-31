@@ -64,6 +64,10 @@ class Camera2 extends CameraViewImpl {
      */
     private static final int MAX_PREVIEW_HEIGHT = 1080;
 
+    private int zoom = 0;
+
+    private float maxtRectb;
+
     private final CameraManager mCameraManager;
 
     private final CameraDevice.StateCallback mCameraDeviceCallback
@@ -197,6 +201,8 @@ class Camera2 extends CameraViewImpl {
 
     private int mDisplayOrientation;
 
+    private float mDesity;
+
     Camera2(Callback callback, PreviewImpl preview, Context context) {
         super(callback, preview);
         mCameraManager = (CameraManager) context.getSystemService(Context.CAMERA_SERVICE);
@@ -206,6 +212,7 @@ class Camera2 extends CameraViewImpl {
                 startCaptureSession();
             }
         });
+        mDesity = context.getResources().getDisplayMetrics().density;
     }
 
     @Override
@@ -216,6 +223,7 @@ class Camera2 extends CameraViewImpl {
         collectCameraInfo();
         prepareImageReader();
         startOpeningCamera();
+
         return true;
     }
 
@@ -343,6 +351,40 @@ class Camera2 extends CameraViewImpl {
     }
 
     @Override
+    void setZoom(boolean isZoom) {
+
+        if (mPreviewRequestBuilder == null) {
+            return;
+        }
+        if (isZoom) {
+            zoom--;
+        } else {
+            zoom++;
+        }
+        Rect rect = new Rect(0, 0, (int) (mPreview.getWidth() * mDesity), (int) (mPreview
+                .getHeight() * mDesity));
+        if (zoom <= 0) {
+            zoom = 0;
+        } else if (zoom >= 100) {
+            zoom = 100;
+        }
+        if (zoom > 0) {
+            double d = 1.0 / (zoom / 100.0 * maxtRectb);
+            rect.right = (int) (rect.right * d);
+            rect.bottom = (int) (rect.bottom * d);
+        }
+        mPreviewRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION, rect);
+
+        try {
+            mCaptureSession.setRepeatingRequest(mPreviewRequestBuilder.build(), mCaptureCallback,
+                    null);
+        } catch (CameraAccessException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
     void setDisplayOrientation(int displayOrientation) {
         mDisplayOrientation = displayOrientation;
         mPreview.setDisplayOrientation(mDisplayOrientation);
@@ -375,12 +417,16 @@ class Camera2 extends CameraViewImpl {
                 if (internal == internalFacing) {
                     mCameraId = id;
                     mCameraCharacteristics = characteristics;
+                    maxtRectb = mCameraCharacteristics.get(CameraCharacteristics
+                            .SCALER_AVAILABLE_MAX_DIGITAL_ZOOM);
                     return true;
                 }
             }
             // Not found
             mCameraId = ids[0];
             mCameraCharacteristics = mCameraManager.getCameraCharacteristics(mCameraId);
+            maxtRectb = mCameraCharacteristics.get(CameraCharacteristics
+                    .SCALER_AVAILABLE_MAX_DIGITAL_ZOOM);
             Integer level = mCameraCharacteristics.get(
                     CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL);
             if (level == null ||
@@ -476,6 +522,7 @@ class Camera2 extends CameraViewImpl {
             return;
         }
         Size previewSize = chooseOptimalSize();
+        Log.i("wuwu", "previewSize："+ previewSize.getWidth() +"--Height:"+ previewSize.getHeight());
         mPreview.setBufferSize(previewSize.getWidth(), previewSize.getHeight());
         Surface surface = mPreview.getSurface();
         try {
@@ -668,6 +715,7 @@ class Camera2 extends CameraViewImpl {
             updateFlash();
             mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER,
                     CaptureRequest.CONTROL_AF_TRIGGER_IDLE);
+            mCameraCharacteristics.get(CameraCharacteristics.SCALER_AVAILABLE_MAX_DIGITAL_ZOOM);
             mCaptureSession.setRepeatingRequest(mPreviewRequestBuilder.build(), mCaptureCallback,
                     null);
             mCaptureCallback.setState(PictureCaptureCallback.STATE_PREVIEW);
