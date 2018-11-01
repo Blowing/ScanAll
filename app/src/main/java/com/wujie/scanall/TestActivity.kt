@@ -29,6 +29,7 @@ class TestActivity : AppCompatActivity(), View.OnClickListener {
         setContentView(R.layout.activity_test)
         initViewPager()
         mViewPager.currentItem = 2
+
 //        initView()
    }
 

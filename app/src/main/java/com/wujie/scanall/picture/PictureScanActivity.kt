@@ -23,6 +23,7 @@ import com.wujie.scanall.model.bean.BaikeResult
 import com.wujie.scanall.model.bean.PictureResult
 import com.wujie.scanall.util.GsonUtil
 import com.wujie.scanall.util.ImageClassifyUtil
+import com.wujie.scanall.util.UriToPathUtil
 import com.wujie.scanall.view.ZoomPageTransformer
 import okio.Okio
 import java.io.File
@@ -235,12 +236,11 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
             }
 
             R.id.album_iv -> {
-
                 val intent = Intent()
+                intent.addCategory(Intent.CATEGORY_OPENABLE)
                 intent.action = Intent.ACTION_GET_CONTENT
                 intent.type = "image/*"
                 startActivityForResult(intent, 1)
-
             }
 
         }
@@ -252,39 +252,51 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
             val uri = data?.data
             //val file = File(URI(uri?.scheme, uri?.host, uri?.path, null))
             Log.i("wuwu", uri.toString() )
-//            mAfterTakePicLayout.visibility = View.VISIBLE
-//            mTakePicLayout.visibility = View.GONE
-//            val height = window.decorView.height - mTakePicLayout.height * 3
-//            val animator = ObjectAnimator.ofFloat(mResultLayout, "translationY", height.toFloat(), 0f)
-//            animator.duration = 2000
-//            animator.addListener(object : Animator.AnimatorListener {
-//                override fun onAnimationRepeat(animation: Animator?) {
-//                }
-//
-//                override fun onAnimationCancel(animation: Animator?) {
-//                }
-//
-//                override fun onAnimationStart(animation: Animator?) {
-//                }
-//
-//                override fun onAnimationEnd(animation: Animator?) {
-//                    val message = showHandler.obtainMessage()
-//                    message.what = 0x12
-//                    showHandler.sendMessage(message)
-//                }
-//
-//            })
-//            animator.start()
+            uri?.let {
+                val path = UriToPathUtil.getPathByUri(applicationContext, it)
+                Log.i("wuwu", path)
+                path?.let {
+                    Thread {
+                        val res = ImageClassifyUtil.instance.ImageClassify(it)
+                        Log.i("wuwu", res.toString())
+                        val pictureResult = GsonUtil.fromJson(res, PictureResult::class.java)
+                        val message = showHandler.obtainMessage()
+                        message.what = 0x11
+                        message.obj = pictureResult
+                        showHandler.sendMessage(message)
+                    }.start()
+                }
 
-            Thread {
-                val res = ImageClassifyUtil.instance.ImageClassify(uri!!.path)
-                Log.i("wuwu", res.toString())
-                val pictureResult = GsonUtil.fromJson(res, PictureResult::class.java)
-                val message = showHandler.obtainMessage()
-                message.what = 0x11
-                message.obj = pictureResult
-                showHandler.sendMessage(message)
-            }.start()
+
+                mAfterTakePicLayout.visibility = View.VISIBLE
+                mTakePicLayout.visibility = View.GONE
+                val height = window.decorView.height - mTakePicLayout.height * 3
+                val animator = ObjectAnimator.ofFloat(mResultLayout, "translationY", height.toFloat(), 0f)
+                animator.duration = 2000
+                animator.addListener(object : Animator.AnimatorListener {
+                    override fun onAnimationRepeat(animation: Animator?) {
+                    }
+
+                    override fun onAnimationCancel(animation: Animator?) {
+                    }
+
+                    override fun onAnimationStart(animation: Animator?) {
+                    }
+
+                    override fun onAnimationEnd(animation: Animator?) {
+                        val message = showHandler.obtainMessage()
+                        message.what = 0x13
+                        message.obj = path
+                        showHandler.sendMessage(message)
+                    }
+
+                })
+                animator.start()
+
+            }
+
+
+
 
         }
     }
@@ -311,6 +323,23 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
 
                 0x12 -> {
                     val file = File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "picture.jpg")
+                    val bitmap = BitmapFactory.decodeFile(file.path)
+                    activity?.mPictureIv?.setImageBitmap(bitmap)
+
+                    val handler = Handler()
+                    val runnable = object : Runnable {
+                        override fun run() {
+                            // TODO Auto-generated method stub
+                            //要做的事情
+                            mScanProgressBar.progress = --count
+                            handler.postDelayed(this, 100)
+                        }
+                    }
+                    handler.postDelayed(runnable, 100)
+                }
+                0x13 -> {
+                    val path = msg.obj as String
+                    val file = File(path)
                     val bitmap = BitmapFactory.decodeFile(file.path)
                     activity?.mPictureIv?.setImageBitmap(bitmap)
 
