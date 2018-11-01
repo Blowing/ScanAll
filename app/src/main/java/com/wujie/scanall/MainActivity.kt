@@ -8,6 +8,8 @@ import com.wujie.scanall.base.BaseActivity
 import com.wujie.scanall.picture.PictureScanActivity
 import com.wujie.scanall.result.ShowResutlActivity
 import com.wujie.scanall.zxing.CaptureActivity
+import com.yanzhenjie.permission.AndPermission
+import com.yanzhenjie.permission.Permission
 
 class MainActivity : BaseActivity(), View.OnClickListener {
 
@@ -19,6 +21,11 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         findViewById<Button>(R.id.btn_scan_all).setOnClickListener(this)
         findViewById<Button>(R.id.btn_scan_show).setOnClickListener(this)
         findViewById<Button>(R.id.btn_image_classify).setOnClickListener(this)
+
+        AndPermission.with(this).runtime()
+                .permission(arrayOf(Permission.CAMERA, Permission.WRITE_EXTERNAL_STORAGE))
+                .onDenied { finish() }
+                .start()
 
     }
 
