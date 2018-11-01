@@ -10,24 +10,35 @@
         android:id="@+id/picture_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:visibility="visible"
         android:orientation="vertical">
+
         <com.google.android.cameraview.CameraView
             android:id="@+id/camera"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@+id/take_picture_layout"
             android:adjustViewBounds="true"
-            android:background="@android:color/black"/>
+            android:background="@android:color/black" />
 
+        <ImageView
+            android:id="@+id/camera_iv_flash"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:padding="16dp"
+            android:src="@mipmap/flash_off" />
 
         <RelativeLayout
             android:id="@+id/take_picture_layout"
             android:layout_width="match_parent"
             android:layout_height="100dp"
-            android:paddingLeft="30dp"
-            android:paddingRight="30dp"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="0dp">
+            android:layout_marginBottom="0dp"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp">
 
             <ImageView
                 android:id="@+id/album_iv"
@@ -48,12 +59,10 @@
                 android:id="@+id/picture_toggle_iv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
                 android:src="@mipmap/np_image_photo_taker_toggle_camera_sel_icon" />
         </RelativeLayout>
-
-
     </RelativeLayout>
 
     <LinearLayout
@@ -81,6 +90,14 @@
                 android:layout_height="match_parent"
                 android:max="100"
                 android:progressDrawable="@drawable/pro_horizontal" />
+            <ImageView
+                android:id="@+id/picture_iv_camera"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:layout_alignParentRight="true"
+                android:visibility="gone"
+                android:src="@mipmap/camera_small"/>
 
         </RelativeLayout>
 

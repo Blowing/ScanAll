@@ -38,10 +38,12 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
     private lateinit var mToggleFaceIv: ImageView
     private lateinit var mTakePicLayout: RelativeLayout
     private lateinit var mPictureLayout: RelativeLayout
+    private lateinit var mFlashView: ImageView
 
     //显示识别结果的view
     private lateinit var mAfterTakePicLayout: LinearLayout
     private lateinit var mPictureIv: ImageView
+    private lateinit var mSwitchCameraIv: ImageView
     private lateinit var mResultLayout: RelativeLayout
     private lateinit var mScanProgressBar: ProgressBar
     private lateinit var mResultViewPager: ViewPager
@@ -53,7 +55,9 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
     private var newDis = 0
     private var oldDis = 0
 
-    private var count = 60
+    private var count = 80
+
+    private var isFlash = false // 默认关闭闪光
     private val mCallback = object : CameraView.Callback() {
         override fun onCameraOpened(cameraView: CameraView?) {
             Log.i(TAG, "onCameraOpened")
@@ -107,6 +111,7 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
 
     private fun initView() {
         mCameraView = findViewById(R.id.camera)
+        mCameraView.flash = CameraView.FLASH_AUTO
         mCameraView.addCallback(mCallback)
 
         mCameraView.setOnTouchListener(object : View.OnTouchListener{
@@ -148,6 +153,9 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
         mToggleFaceIv = findViewById(R.id.picture_toggle_iv)
         mToggleFaceIv.setOnClickListener(this)
 
+        mFlashView = findViewById(R.id.camera_iv_flash)
+        mFlashView.setOnClickListener(this)
+
         findViewById<ImageView>(R.id.album_iv).setOnClickListener(this)
 
         mTakePicLayout = findViewById(R.id.take_picture_layout)
@@ -159,6 +167,8 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
     private fun initResultView() {
         mAfterTakePicLayout = findViewById(R.id.take_picture_after_layout)
         mPictureIv = findViewById(R.id.picture_iv)
+        mSwitchCameraIv = findViewById(R.id.picture_iv_camera)
+        mSwitchCameraIv.setOnClickListener(this)
         mResultLayout = findViewById(R.id.result_layout)
         mScanProgressBar = findViewById(R.id.scan_progresBar)
         mResultNameTv = findViewById(R.id.result_tv_name)
@@ -195,6 +205,7 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.take_picture_iv -> { // 拍照
+
                 mCameraView.takePicture()
                 mAfterTakePicLayout.visibility = View.VISIBLE
                 mTakePicLayout.visibility = View.GONE
@@ -241,6 +252,26 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
                 intent.action = Intent.ACTION_GET_CONTENT
                 intent.type = "image/*"
                 startActivityForResult(intent, 1)
+            }
+
+            R.id.camera_iv_flash -> {
+                isFlash = !isFlash
+                if (isFlash) {
+                    mCameraView.flash = CameraView.FLASH_AUTO
+                    mFlashView.setImageResource(R.mipmap.flash)
+                } else {
+                    mCameraView.flash = CameraView.FLASH_OFF
+                    mFlashView.setImageResource(R.mipmap.flash_off)
+                }
+            }
+
+            R.id.picture_iv_camera -> {
+                mAfterTakePicLayout.visibility = View.GONE
+                mTakePicLayout.visibility = View.VISIBLE
+                mSwitchCameraIv.visibility = View.GONE
+                mPictureIv.visibility = View.GONE
+                mResultNameTv.text = ""
+                mResultViewPager.removeAllViews()
             }
 
         }
@@ -324,6 +355,8 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
                 0x12 -> {
                     val file = File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "picture.jpg")
                     val bitmap = BitmapFactory.decodeFile(file.path)
+                    activity?.mPictureIv?.visibility = View.VISIBLE
+                    activity?.mSwitchCameraIv?.visibility = View.VISIBLE
                     activity?.mPictureIv?.setImageBitmap(bitmap)
 
                     val handler = Handler()
@@ -341,6 +374,8 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
                     val path = msg.obj as String
                     val file = File(path)
                     val bitmap = BitmapFactory.decodeFile(file.path)
+                    activity?.mPictureIv?.visibility = View.VISIBLE
+                    activity?.mSwitchCameraIv?.visibility = View.VISIBLE
                     activity?.mPictureIv?.setImageBitmap(bitmap)
 
                     val handler = Handler()
