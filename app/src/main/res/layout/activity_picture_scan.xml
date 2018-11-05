@@ -14,13 +14,65 @@
         android:visibility="visible"
         android:orientation="vertical">
 
-        <com.google.android.cameraview.CameraView
-            android:id="@+id/camera"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/take_picture_layout"
-            android:adjustViewBounds="true"
-            android:background="@android:color/black" />
+            android:orientation="vertical">
+
+            <com.google.android.cameraview.CameraView
+                android:id="@+id/camera"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_above="@+id/take_picture_layout"
+                android:adjustViewBounds="true"
+                android:background="@android:color/black" />
+
+            <android.support.design.widget.TabLayout
+                android:id="@+id/type_table_layout"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                app:tabIndicatorColor="@color/green"
+                app:tabIndicatorHeight="2dp"
+                app:tabMode="scrollable"
+                app:tabSelectedTextColor="@color/green" />
+
+
+            <RelativeLayout
+                android:id="@+id/take_picture_layout"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="0dp"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp">
+
+                <ImageView
+                    android:id="@+id/album_iv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:src="@mipmap/icon_camera_photo_library" />
+
+                <ImageView
+                    android:id="@+id/take_picture_iv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_marginBottom="26dp"
+                    android:src="@mipmap/np_image_photo_taker_shutter_icon" />
+
+                <ImageView
+                    android:id="@+id/picture_toggle_iv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:src="@mipmap/np_image_photo_taker_toggle_camera_sel_icon" />
+            </RelativeLayout>
+
+        </LinearLayout>
+
 
         <ImageView
             android:id="@+id/camera_iv_flash"
@@ -30,48 +82,15 @@
             android:layout_alignParentRight="true"
             android:padding="16dp"
             android:src="@mipmap/flash_off" />
-
-        <RelativeLayout
-            android:id="@+id/take_picture_layout"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="0dp"
-            android:paddingLeft="30dp"
-            android:paddingRight="30dp">
-
-            <ImageView
-                android:id="@+id/album_iv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:src="@mipmap/icon_camera_photo_library" />
-
-            <ImageView
-                android:id="@+id/take_picture_iv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_marginBottom="26dp"
-                android:src="@mipmap/np_image_photo_taker_shutter_icon" />
-
-            <ImageView
-                android:id="@+id/picture_toggle_iv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:src="@mipmap/np_image_photo_taker_toggle_camera_sel_icon" />
-        </RelativeLayout>
     </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/take_picture_after_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
+        android:background="@color/transparent"
         android:orientation="vertical"
-        android:background="@color/transparent">
+        android:visibility="gone">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -81,8 +100,8 @@
                 android:id="@+id/picture_iv"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scaleType="fitXY"
-                />
+                android:scaleType="fitXY" />
+
             <ProgressBar
                 android:id="@+id/scan_progresBar"
                 style="@android:style/Widget.ProgressBar.Horizontal"
@@ -90,49 +109,62 @@
                 android:layout_height="match_parent"
                 android:max="100"
                 android:progressDrawable="@drawable/pro_horizontal" />
+
             <ImageView
                 android:id="@+id/picture_iv_camera"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="16dp"
                 android:layout_alignParentRight="true"
-                android:visibility="gone"
-                android:src="@mipmap/camera_small"/>
-
+                android:padding="16dp"
+                android:src="@mipmap/camera_small"
+                android:visibility="gone" />
         </RelativeLayout>
-
 
         <RelativeLayout
             android:id="@+id/result_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:clipChildren="false"
-            android:background="@android:color/white">
+            android:layout_alignBottom="@+id/take_picture_after_layout"
+            android:background="@android:color/white"
+            android:clipChildren="false">
 
-
-            <TextView
-                android:id="@+id/result_tv_name"
+            <LinearLayout
+                android:id="@+id/des_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:singleLine="true"
-                android:textSize="16sp"
-                tools:text="键盘"/>
+                android:layout_height="150dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/result_tv_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:singleLine="true"
+                    android:textSize="16sp"
+                    tools:text="键盘" />
+
+                <TextView
+                    android:id="@+id/result_tv_des"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="10dp"
+                     />
+            </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:text="客官不要急\n结果马上到"/>
+                android:text="客官不要急\n结果马上到" />
 
             <android.support.v4.view.ViewPager
                 android:id="@+id/result_viewpager"
                 android:layout_width="200dp"
                 android:layout_height="200dp"
-                android:clipChildren="false"
-                android:layout_centerInParent="true"/>
+                android:layout_below="@+id/des_layout"
+                android:layout_centerHorizontal="true"
+                android:clipChildren="false" />
         </RelativeLayout>
-
     </LinearLayout>
 
 

@@ -61,5 +61,5 @@ dependencies {
     implementation 'com.qq.mta:mta:3.4.7-release'
     //MTA基础包
     implementation 'com.tencent.mid:mid:4.06-Release'
-
+    implementation 'com.android.support:design:28.0.0'
 }

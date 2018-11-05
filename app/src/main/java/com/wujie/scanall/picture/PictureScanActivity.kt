@@ -2,6 +2,7 @@ package com.wujie.scanall.picture
 
 import android.animation.Animator
 import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -10,6 +11,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
 import android.os.Message
+import android.support.design.widget.TabLayout
 import android.support.v4.view.ViewPager
 import android.util.Log
 import android.view.MotionEvent
@@ -39,6 +41,7 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
     private lateinit var mTakePicLayout: RelativeLayout
     private lateinit var mPictureLayout: RelativeLayout
     private lateinit var mFlashView: ImageView
+    private lateinit var mTypeTab: TabLayout
 
     //显示识别结果的view
     private lateinit var mAfterTakePicLayout: LinearLayout
@@ -48,6 +51,7 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
     private lateinit var mScanProgressBar: ProgressBar
     private lateinit var mResultViewPager: ViewPager
     private lateinit var mResultNameTv: TextView
+    private lateinit var mDesTv: TextView
     private lateinit var mBaikeResult: ArrayList<BaikeResult>
 
     private var facing: Int = 0
@@ -74,7 +78,7 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
             sink.write(data!!)
             sink.close()
             Thread {
-                val res = ImageClassifyUtil.instance.ImageClassify(file.path)
+                val res = ImageClassifyUtil.instance.ImageClassify(file.path,type)
                 Log.i("wuwu", res.toString())
                 val pictureResult = GsonUtil.fromJson(res, PictureResult::class.java)
                 val message = showHandler.obtainMessage()
@@ -86,6 +90,8 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
     }
 
     private lateinit var showHandler: ShowHandler
+
+    private var type = ImageClassifyUtil.normal
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -109,6 +115,7 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
         super.onDestroy()
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun initView() {
         mCameraView = findViewById(R.id.camera)
         mCameraView.flash = CameraView.FLASH_AUTO
@@ -161,6 +168,27 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
         mTakePicLayout = findViewById(R.id.take_picture_layout)
         mPictureLayout = findViewById(R.id.picture_layout)
 
+        mTypeTab = findViewById(R.id.type_table_layout)
+        mTypeTab.addTab(mTypeTab.newTab().setText("通用").setTag(ImageClassifyUtil.normal))
+        mTypeTab.addTab(mTypeTab.newTab().setText("植物").setTag(ImageClassifyUtil.plant))
+        mTypeTab.addTab(mTypeTab.newTab().setText("动物").setTag(ImageClassifyUtil.animal))
+        mTypeTab.addTab(mTypeTab.newTab().setText("菜品").setTag(ImageClassifyUtil.dish))
+        mTypeTab.addTab(mTypeTab.newTab().setText("汽车").setTag(ImageClassifyUtil.car))
+        mTypeTab.addTab(mTypeTab.newTab().setText("标志").setTag(ImageClassifyUtil.logo))
+        mTypeTab.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener{
+            override fun onTabReselected(p0: TabLayout.Tab?) {
+            }
+
+            override fun onTabUnselected(p0: TabLayout.Tab?) {
+            }
+
+            override fun onTabSelected(p0: TabLayout.Tab?) {
+                type = p0?.tag as String
+            }
+
+
+
+        })
 
     }
 
@@ -172,6 +200,7 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
         mResultLayout = findViewById(R.id.result_layout)
         mScanProgressBar = findViewById(R.id.scan_progresBar)
         mResultNameTv = findViewById(R.id.result_tv_name)
+        mDesTv = findViewById(R.id.result_tv_des)
         mResultViewPager = findViewById(R.id.result_viewpager)
         mResultViewPager.pageMargin = 20
         mResultViewPager.offscreenPageLimit = 3
@@ -191,7 +220,9 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
 
             override fun onPageSelected(p0: Int) {
                 mBaikeResult?.let {
-                    mResultNameTv.text = it[p0].keyword+"(它的可信度为${it[p0].score})"
+                    mResultNameTv.text = it[p0].name+it[p0].keyword+"(它的可信度为${it[p0].score})"
+                            .replace("null", "")
+                    mDesTv.text = it[p0].baike_info.description
                 }
 
             }
@@ -288,7 +319,7 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
                 Log.i("wuwu", path)
                 path?.let {
                     Thread {
-                        val res = ImageClassifyUtil.instance.ImageClassify(it)
+                        val res = ImageClassifyUtil.instance.ImageClassify(it, type)
                         Log.i("wuwu", res.toString())
                         val pictureResult = GsonUtil.fromJson(res, PictureResult::class.java)
                         val message = showHandler.obtainMessage()
@@ -349,7 +380,11 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
                     mBaikeResult.removeAt(0)
                     activity?.mResultViewPager?.adapter = PicturePageAdapter(activity as Context,
                             resutl.result)
-                    mResultNameTv.text = mBaikeResult[0].keyword+"(它的可信度为${mBaikeResult[0].score})"
+                    if(mBaikeResult.size > 0) {
+                        mResultNameTv.text = mBaikeResult[0].name+mBaikeResult[0].keyword+"" +
+                                "(它的可信度为${mBaikeResult[0].score})".replace("null", "")
+                        mDesTv.text = mBaikeResult[0].baike_info.description
+                    }
                 }
 
                 0x12 -> {
