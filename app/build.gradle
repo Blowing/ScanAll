@@ -20,10 +20,10 @@ android {
             // 还可以添加 'x86', 'x86_64', 'mips', 'mips64'
         }
         manifestPlaceholders = [
-            //A35ZJHN8D1LB 属于应用"没事扫一扫"独有的 Android AppKey, 用于配置SDK
-            MTA_APPKEY : "A35ZJHN8D1LB",
-            //标注应用推广渠道用以区分新用户来源，可填写如应用宝，豌豆荚等
-            MTA_CHANNEL : "huawei"
+                //A35ZJHN8D1LB 属于应用"没事扫一扫"独有的 Android AppKey, 用于配置SDK
+                MTA_APPKEY : "A35ZJHN8D1LB",
+                //标注应用推广渠道用以区分新用户来源，可填写如应用宝，豌豆荚等
+                MTA_CHANNEL: "huawei"
         ]
     }
     buildTypes {
@@ -41,6 +41,7 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation fileTree(include: ['*.aar'], dir: 'libs')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
@@ -62,4 +63,5 @@ dependencies {
     //MTA基础包
     implementation 'com.tencent.mid:mid:4.06-Release'
     implementation 'com.android.support:design:28.0.0'
+    implementation 'com.android.support:support-v4:28.0.0'
 }

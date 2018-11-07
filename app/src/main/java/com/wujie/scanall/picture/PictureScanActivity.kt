@@ -17,6 +17,7 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.*
+import cdc.sed.yff.nm.sp.SpotManager
 import com.google.android.cameraview.CameraView
 import com.wujie.scanall.R
 import com.wujie.scanall.base.BaseActivity
@@ -113,6 +114,7 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
 
     override fun onDestroy() {
         super.onDestroy()
+        SpotManager.getInstance(this).onAppExit()
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -185,8 +187,6 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
             override fun onTabSelected(p0: TabLayout.Tab?) {
                 type = p0?.tag as String
             }
-
-
 
         })
 
@@ -375,15 +375,20 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
             val activity = weakActivity.get()
             when (msg?.what) {
                 0x11 -> {
+                    msg.obj = null
                     val resutl = msg.obj as PictureResult
                     mBaikeResult = resutl.result
-                    mBaikeResult.removeAt(0)
-                    activity?.mResultViewPager?.adapter = PicturePageAdapter(activity as Context,
-                            resutl.result)
-                    if(mBaikeResult.size > 0) {
-                        mResultNameTv.text = mBaikeResult[0].name+mBaikeResult[0].keyword+"" +
-                                "(它的可信度为${mBaikeResult[0].score})".replace("null", "")
-                        mDesTv.text = mBaikeResult[0].baike_info.description
+                    if (mBaikeResult != null) {
+                        mBaikeResult.removeAt(0)
+                        activity?.mResultViewPager?.adapter = PicturePageAdapter(activity as Context,
+                                mBaikeResult)
+                        if(mBaikeResult.size > 0) {
+                            mResultNameTv.text = mBaikeResult[0].name+mBaikeResult[0].keyword+"" +
+                                    "(它的可信度为${mBaikeResult[0].score})".replace("null", "")
+                            mDesTv.text = mBaikeResult[0].baike_info.description
+                        }
+                    } else {
+                        Toast.makeText(activity, "很抱歉，没有识别结果",Toast.LENGTH_SHORT).show()
                     }
                 }
 

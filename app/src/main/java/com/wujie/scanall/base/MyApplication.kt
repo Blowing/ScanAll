@@ -1,6 +1,7 @@
 package com.wujie.scanall.base
 
 import android.app.Application
+import cdc.sed.yff.AdManager
 import com.tencent.bugly.Bugly
 import com.tencent.stat.StatConfig
 import com.tencent.stat.StatService
@@ -23,5 +24,9 @@ class MyApplication : Application() {
         // 腾讯MTA分析
         StatConfig.setDebugEnable(true)
         StatService.registerActivityLifecycleCallbacks(this)
+        AdManager.getInstance(this).init("3f7eb61c9ebdf193", "f3d8aecc42bb92b3", true)
+
     }
+
+
 }
