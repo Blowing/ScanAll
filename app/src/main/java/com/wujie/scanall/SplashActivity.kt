@@ -43,8 +43,7 @@ class SplashActivity : BaseActivity(){
         })
 
         AndPermission.with(this).runtime()
-                .permission(arrayOf(Permission.CAMERA, Permission.WRITE_EXTERNAL_STORAGE,
-                        Permission.READ_PHONE_STATE))
+                .permission(arrayOf(Permission.CAMERA, Permission.WRITE_EXTERNAL_STORAGE))
                 .onDenied { finish() }
                 .onGranted {
                     SpotManager.getInstance(this).showSplash(this, splashViewSettings,

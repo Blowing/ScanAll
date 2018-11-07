@@ -125,7 +125,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignBottom="@+id/take_picture_after_layout"
-            android:background="@android:color/white"
+            android:background="#FFDAE3E4"
             android:clipChildren="false">
 
             <LinearLayout
@@ -149,6 +149,7 @@
                     android:layout_height="match_parent"
                     android:scrollbars="vertical"
                     android:padding="10dp"
+
                      />
             </LinearLayout>
 
