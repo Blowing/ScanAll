@@ -147,6 +147,7 @@
                     android:id="@+id/result_tv_des"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:scrollbars="vertical"
                     android:padding="10dp"
                      />
             </LinearLayout>

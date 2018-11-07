@@ -13,6 +13,7 @@ import android.os.Handler
 import android.os.Message
 import android.support.design.widget.TabLayout
 import android.support.v4.view.ViewPager
+import android.text.method.ScrollingMovementMethod
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
@@ -201,6 +202,7 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
         mScanProgressBar = findViewById(R.id.scan_progresBar)
         mResultNameTv = findViewById(R.id.result_tv_name)
         mDesTv = findViewById(R.id.result_tv_des)
+        mDesTv.movementMethod = ScrollingMovementMethod.getInstance()
         mResultViewPager = findViewById(R.id.result_viewpager)
         mResultViewPager.pageMargin = 20
         mResultViewPager.offscreenPageLimit = 3
@@ -220,9 +222,10 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
 
             override fun onPageSelected(p0: Int) {
                 mBaikeResult?.let {
-                    mResultNameTv.text = it[p0].name+it[p0].keyword+"(它的可信度为${it[p0].score})"
+                    mResultNameTv.text = (it[p0].name+it[p0].keyword+"(它的可信度为${it[p0].score})")
                             .replace("null", "")
                     mDesTv.text = it[p0].baike_info.description
+                    mDesTv.scrollTo(0, 0)
                 }
 
             }
@@ -302,6 +305,8 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
                 mSwitchCameraIv.visibility = View.GONE
                 mPictureIv.visibility = View.GONE
                 mResultNameTv.text = ""
+                mDesTv.text =""
+                mPictureIv.setImageResource(R.mipmap.common_background_card)
                 mResultViewPager.removeAllViews()
             }
 
@@ -375,7 +380,6 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
             val activity = weakActivity.get()
             when (msg?.what) {
                 0x11 -> {
-                    msg.obj = null
                     val resutl = msg.obj as PictureResult
                     mBaikeResult = resutl.result
                     if (mBaikeResult != null) {
@@ -386,9 +390,11 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
                             mResultNameTv.text = mBaikeResult[0].name+mBaikeResult[0].keyword+"" +
                                     "(它的可信度为${mBaikeResult[0].score})".replace("null", "")
                             mDesTv.text = mBaikeResult[0].baike_info.description
+                        } else {
+                            Toast.makeText(activity, "对不起，没有识别结果",Toast.LENGTH_SHORT).show()
                         }
                     } else {
-                        Toast.makeText(activity, "很抱歉，没有识别结果",Toast.LENGTH_SHORT).show()
+                        Toast.makeText(activity, "对不起，没有识别结果",Toast.LENGTH_SHORT).show()
                     }
                 }
 
