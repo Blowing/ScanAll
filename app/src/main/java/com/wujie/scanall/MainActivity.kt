@@ -37,11 +37,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
                 startActivityForResult(Intent(this, CaptureActivity::class.java), 1000)
 //                startActivity(Intent(this, CaptureActivity::class.java))
             }
-            R.id.btn_scan_all -> {
-                startActivity(Intent(this, TestActivity::class.java))
-//                startActivity(Intent(this, com.google.zxing
-//                        .CaptureActivity::class.java))
-            }
+
             R.id.btn_scan_show -> {
                 startActivity(Intent(this, ShowResutlActivity::class.java))
             }

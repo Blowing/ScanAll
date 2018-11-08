@@ -40,10 +40,13 @@ class PicturePageAdapter(val context: Context, val images: ArrayList<BaikeResult
         val baikeInfo = images[position]
 
 
-        Glide.with(context).load(baikeInfo.baike_info.image_url)
-                .apply(RequestOptions.bitmapTransform(GlideCircleTransform()).dontAnimate().placeholder(R
-                        .mipmap.common_background_card))
-                .into(imageView)
+        if (baikeInfo.baike_info != null) {
+            Glide.with(context).load(baikeInfo.baike_info.image_url)
+                    .apply(RequestOptions.bitmapTransform(GlideCircleTransform()).dontAnimate().placeholder(R
+                            .mipmap.common_background_card))
+                    .into(imageView)
+        }
+
         container.addView(convertView)
         return convertView
     }

@@ -18,7 +18,9 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.*
+import cdc.sed.yff.nm.sp.SpotListener
 import cdc.sed.yff.nm.sp.SpotManager
+import cdc.sed.yff.nm.sp.SpotRequestListener
 import com.google.android.cameraview.CameraView
 import com.mingle.widget.LoadingView
 import com.wujie.scanall.R
@@ -100,6 +102,17 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_picture_scan)
+        SpotManager.getInstance(this).requestSpot(object :SpotRequestListener {
+            override fun onRequestFailed(p0: Int) {
+                Log.i("wuwu", "获取插屏广告失败")
+            }
+
+            override fun onRequestSuccess() {
+                Log.i("wuwu", "获取插屏广告成功")
+            }
+
+        })
+        SpotManager.getInstance(this).setImageType(SpotManager.IMAGE_TYPE_VERTICAL)
         initView()
         initResultView()
         showHandler = ShowHandler(this)
@@ -179,7 +192,7 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
         mTypeTab.addTab(mTypeTab.newTab().setText("动物").setTag(ImageClassifyUtil.animal))
         mTypeTab.addTab(mTypeTab.newTab().setText("菜品").setTag(ImageClassifyUtil.dish))
         mTypeTab.addTab(mTypeTab.newTab().setText("汽车").setTag(ImageClassifyUtil.car))
-        mTypeTab.addTab(mTypeTab.newTab().setText("标志").setTag(ImageClassifyUtil.logo))
+        //mTypeTab.addTab(mTypeTab.newTab().setText("标志").setTag(ImageClassifyUtil.logo))
         mTypeTab.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener{
             override fun onTabReselected(p0: TabLayout.Tab?) {
             }
@@ -229,7 +242,11 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
                 mBaikeResult?.let {
                     mResultNameTv.text = (it[p0].name+it[p0].keyword+"(它的可信度为${it[p0].score})")
                             .replace("null", "")
-                    mDesTv.text = it[p0].baike_info.description
+                    mDesTv.text= if(it[p0].baike_info == null) {
+                        ""
+                    } else {
+                        it[p0].baike_info.description
+                    }
                     mDesTv.scrollTo(0, 0)
                 }
 
@@ -421,6 +438,24 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
                         }
                     }
                     handler.postDelayed(runnable, 100)
+
+                    SpotManager.getInstance(this@PictureScanActivity).showSpot(this@PictureScanActivity,
+                            object : SpotListener {
+                                override fun onSpotClicked(p0: Boolean) {
+                                }
+
+                                override fun onShowSuccess() {
+
+                                }
+
+                                override fun onShowFailed(p0: Int) {
+                                    Log.i("wuwu", "插屏显示失败")
+                                }
+
+                                override fun onSpotClosed() {
+                                }
+
+                            })
                 }
                 0x13 -> {
                     val path = msg.obj as String
