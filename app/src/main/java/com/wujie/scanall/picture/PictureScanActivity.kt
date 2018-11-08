@@ -126,10 +126,17 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
     override fun onPause() {
         mCameraView.stop()
         super.onPause()
+        SpotManager.getInstance(this).onPause()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        SpotManager.getInstance(this).onStop()
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        SpotManager.getInstance(this).onDestroy()
         SpotManager.getInstance(this).onAppExit()
     }
 
