@@ -3,8 +3,7 @@ package com.wujie.scanall.base
 import android.app.Application
 import cdc.sed.yff.AdManager
 import com.tencent.bugly.Bugly
-import com.tencent.stat.StatConfig
-import com.tencent.stat.StatService
+import com.umeng.commonsdk.UMConfigure
 
 /**
  * Created by wujie
@@ -21,10 +20,11 @@ class MyApplication : Application() {
         instance = this
         // 腾讯bugly分析
         Bugly.init(this, "264912f934", false)
-        // 腾讯MTA分析
-        StatConfig.setDebugEnable(true)
-        StatService.registerActivityLifecycleCallbacks(this)
+//        // 腾讯MTA分析
+//        StatConfig.setDebugEnable(true)
+//        StatService.registerActivityLifecycleCallbacks(this)
         AdManager.getInstance(this).init("3f7eb61c9ebdf193", "f3d8aecc42bb92b3", true)
+        UMConfigure.init(this, "5be38c63f1f556a60d0005d5", "huawei", UMConfigure.DEVICE_TYPE_PHONE, "")
 
     }
 
