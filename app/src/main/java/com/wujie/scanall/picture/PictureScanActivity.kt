@@ -20,6 +20,7 @@ import android.view.View
 import android.widget.*
 import cdc.sed.yff.nm.sp.SpotManager
 import com.google.android.cameraview.CameraView
+import com.mingle.widget.LoadingView
 import com.wujie.scanall.R
 import com.wujie.scanall.base.BaseActivity
 import com.wujie.scanall.model.adapter.PicturePageAdapter
@@ -54,6 +55,7 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
     private lateinit var mResultViewPager: ViewPager
     private lateinit var mResultNameTv: TextView
     private lateinit var mDesTv: TextView
+    private lateinit var mResultLoadingView: LoadingView
     private lateinit var mBaikeResult: ArrayList<BaikeResult>
 
     private var facing: Int = 0
@@ -203,6 +205,9 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
         mResultNameTv = findViewById(R.id.result_tv_name)
         mDesTv = findViewById(R.id.result_tv_des)
         mDesTv.movementMethod = ScrollingMovementMethod.getInstance()
+        mResultLoadingView = findViewById(R.id.result_loading_view)
+
+
         mResultViewPager = findViewById(R.id.result_viewpager)
         mResultViewPager.pageMargin = 20
         mResultViewPager.offscreenPageLimit = 3
@@ -380,6 +385,7 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
             val activity = weakActivity.get()
             when (msg?.what) {
                 0x11 -> {
+                    mResultLoadingView.visibility = View.GONE
                     val resutl = msg.obj as PictureResult
                     mBaikeResult = resutl.result
                     if (mBaikeResult != null) {
@@ -404,7 +410,7 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
                     activity?.mPictureIv?.visibility = View.VISIBLE
                     activity?.mSwitchCameraIv?.visibility = View.VISIBLE
                     activity?.mPictureIv?.setImageBitmap(bitmap)
-
+                    activity?.mResultLoadingView?.visibility = View.VISIBLE
                     val handler = Handler()
                     val runnable = object : Runnable {
                         override fun run() {
@@ -427,8 +433,7 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
                     val handler = Handler()
                     val runnable = object : Runnable {
                         override fun run() {
-                            // TODO Auto-generated method stub
-                            //要做的事情
+
                             mScanProgressBar.progress = --count
                             handler.postDelayed(this, 100)
                         }
