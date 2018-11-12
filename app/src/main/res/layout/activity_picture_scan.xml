@@ -25,8 +25,7 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:layout_above="@+id/take_picture_layout"
-                android:adjustViewBounds="true"
-                android:background="@android:color/black" />
+                android:adjustViewBounds="true" />
 
             <android.support.design.widget.TabLayout
                 android:id="@+id/type_table_layout"

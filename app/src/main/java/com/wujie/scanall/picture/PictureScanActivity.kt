@@ -143,7 +143,6 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
     @SuppressLint("ClickableViewAccessibility")
     private fun initView() {
         mCameraView = findViewById(R.id.camera)
-        mCameraView.flash = CameraView.FLASH_AUTO
         mCameraView.addCallback(mCallback)
 
         mCameraView.setOnTouchListener(object : View.OnTouchListener{

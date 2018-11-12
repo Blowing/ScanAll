@@ -5,11 +5,11 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion rootProject.ext.compileSdkVersion
     defaultConfig {
         applicationId "com.wujie.scanall"
-        minSdkVersion 15
-        targetSdkVersion 26
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -43,8 +43,7 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation fileTree(include: ['*.aar'], dir: 'libs')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    implementation "com.android.support:appcompat-v7:$supportLibraryVersion"
     implementation 'com.squareup.okhttp3:okhttp:3.11.0'
     implementation 'com.google.code.gson:gson:2.8.5'
     //    testImplementation 'junit:junit:4.12'
@@ -56,13 +55,13 @@ dependencies {
     implementation project(':lib_permission')
     implementation project(':shapeloading')
     //    implementation project(':lib_baidu')
-    implementation 'com.android.support:design:28.0.0'
+    implementation "com.android.support:design:$supportLibraryVersion"
     implementation 'com.github.bumptech.glide:glide:4.8.0'
     implementation 'com.tencent.bugly:crashreport:2.6.6.1'
 //    //MTA主包
 //    implementation 'com.qq.mta:mta:3.4.7-release'
 //    //MTA基础包
 //    implementation 'com.tencent.mid:mid:4.06-Release'
-    implementation 'com.android.support:design:28.0.0'
-    implementation 'com.android.support:support-v4:28.0.0'
+    implementation "com.android.support:design:$supportLibraryVersion"
+    implementation "com.android.support:support-v4:$supportLibraryVersion"
 }

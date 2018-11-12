@@ -139,28 +139,6 @@ public class CameraView extends FrameLayout {
         return preview;
     }
 
-//    @Override
-//    public boolean onTouchEvent(MotionEvent event) {
-//        Log.i("wuwu", "touchEvent:"+ event.getAction());
-//        if (event.getPointerCount() == 2) {
-//            float x =  event.getX(0) - event.getX(1);
-//            float y = event.getY(0) - event.getY(1);
-//
-//            double zoom = Math.sqrt(x*x + y*y);
-//            Log.i("wuwu", "zoom:"+ zoom);
-//        }
-//        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-//            return performClick();
-//        }
-//
-//       return super.onTouchEvent(event);
-//    }
-//
-//    @Override
-//    public boolean performClick() {
-//        return super.performClick();
-//    }
-
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();

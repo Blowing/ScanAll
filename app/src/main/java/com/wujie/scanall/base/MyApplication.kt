@@ -23,7 +23,7 @@ class MyApplication : Application() {
 //        // 腾讯MTA分析
 //        StatConfig.setDebugEnable(true)
 //        StatService.registerActivityLifecycleCallbacks(this)
-        AdManager.getInstance(this).init("3f7eb61c9ebdf193", "f3d8aecc42bb92b3", false)
+        AdManager.getInstance(this).init("3f7eb61c9ebdf193", "f3d8aecc42bb92b3", true)
         UMConfigure.init(this, "5be38c63f1f556a60d0005d5", "huawei", UMConfigure.DEVICE_TYPE_PHONE, "")
 
     }
