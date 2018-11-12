@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.widget.RelativeLayout
+import android.widget.Toast
 import cdc.sed.yff.nm.cm.ErrorCode
 import cdc.sed.yff.nm.sp.SplashViewSettings
 import cdc.sed.yff.nm.sp.SpotListener
@@ -44,7 +45,9 @@ class SplashActivity : BaseActivity(){
 
         AndPermission.with(this).runtime()
                 .permission(arrayOf(Permission.CAMERA, Permission.WRITE_EXTERNAL_STORAGE))
-                .onDenied { finish() }
+                .onDenied {
+                    Toast.makeText(this, "没有相机的权限",Toast.LENGTH_SHORT).show()
+                    finish() }
                 .onGranted {
                     SpotManager.getInstance(this).showSplash(this, splashViewSettings,
                             object : SpotListener {

@@ -328,6 +328,7 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
             }
 
             R.id.picture_iv_camera -> {
+                mCameraView.stop()
                 mAfterTakePicLayout.visibility = View.GONE
                 mTakePicLayout.visibility = View.VISIBLE
                 mSwitchCameraIv.visibility = View.GONE
@@ -336,6 +337,8 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
                 mDesTv.text =""
                 mPictureIv.setImageResource(R.mipmap.common_background_card)
                 mResultViewPager.removeAllViews()
+                mCameraView.addCallback(mCallback)
+                mCameraView.start()
             }
 
         }
@@ -409,6 +412,8 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
             when (msg?.what) {
                 0x11 -> {
                     mResultLoadingView.visibility = View.GONE
+                    count = 0
+                    mScanProgressBar.progress = count
                     val resutl = msg.obj as PictureResult
                     mBaikeResult = resutl.result
                     if (mBaikeResult != null) {
@@ -439,8 +444,11 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
                         override fun run() {
                             // TODO Auto-generated method stub
                             //要做的事情
-                            mScanProgressBar.progress = --count
-                            handler.postDelayed(this, 100)
+                            if (--count >= 0) {
+                                mScanProgressBar.progress = count
+                                handler.postDelayed(this, 100)
+                            }
+
                         }
                     }
                     handler.postDelayed(runnable, 100)
@@ -475,8 +483,10 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
                     val runnable = object : Runnable {
                         override fun run() {
 
-                            mScanProgressBar.progress = --count
-                            handler.postDelayed(this, 100)
+                            if (--count >= 0) {
+                                mScanProgressBar.progress = count
+                                handler.postDelayed(this, 100)
+                            }
                         }
                     }
                     handler.postDelayed(runnable, 100)
