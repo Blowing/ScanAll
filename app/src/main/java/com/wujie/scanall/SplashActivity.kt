@@ -44,7 +44,8 @@ class SplashActivity : BaseActivity(){
         })
 
         AndPermission.with(this).runtime()
-                .permission(arrayOf(Permission.CAMERA, Permission.WRITE_EXTERNAL_STORAGE))
+                .permission(arrayOf(Permission.CAMERA, Permission.WRITE_EXTERNAL_STORAGE,
+                        Permission.READ_PHONE_STATE))
                 .onDenied {
                     Toast.makeText(this, "没有相机的权限",Toast.LENGTH_SHORT).show()
                     finish() }

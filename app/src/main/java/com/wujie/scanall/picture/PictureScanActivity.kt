@@ -416,20 +416,19 @@ class PictureScanActivity : BaseActivity(), View.OnClickListener {
                     mScanProgressBar.progress = count
                     val resutl = msg.obj as PictureResult
                     mBaikeResult = resutl.result
-                    if (mBaikeResult != null) {
+                    if (resutl.result != null) {
                         mBaikeResult.removeAt(0)
                         activity?.mResultViewPager?.adapter = PicturePageAdapter(activity as Context,
                                 mBaikeResult)
                         if(mBaikeResult.size > 0) {
-                            mResultNameTv.text = mBaikeResult[0].name+mBaikeResult[0].keyword+"" +
-                                    "(它的可信度为${mBaikeResult[0].score})".replace("null", "")
+                            mResultNameTv.text = (mBaikeResult[0].name+mBaikeResult[0].keyword+"" +
+                                    "(它的可信度为${mBaikeResult[0].score})").replace("null", "")
                             mDesTv.text = mBaikeResult[0].baike_info.description
                         } else {
                             Toast.makeText(activity, "对不起，没有识别结果",Toast.LENGTH_SHORT).show()
                         }
-                    } else {
-                        Toast.makeText(activity, "对不起，没有识别结果",Toast.LENGTH_SHORT).show()
                     }
+
                 }
 
                 0x12 -> {
