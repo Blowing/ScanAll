@@ -132,7 +132,7 @@ public class CameraView extends FrameLayout {
     private PreviewImpl createPreviewImpl(Context context) {
         PreviewImpl preview;
 
-        if (Rom.isOppo()) {
+        if (Rom.isOppo() || Rom.isVivo()) {
             return new SurfaceViewPreview(context, this);
         }
         if (Build.VERSION.SDK_INT < 23) {
